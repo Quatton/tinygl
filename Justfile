@@ -1,5 +1,11 @@
 install:
-  conan install . --output-folder=build --build=missing
+  conan install . --build=missing
 
 build:
-  conan build .
+  conan build . --settings build_type=Debug
+
+run:
+  ./build/Debug/tinygl
+
+clean:
+  rm -rf build
