@@ -1,0 +1,44 @@
+{
+    "profiles": [
+        {
+            "name": "tinygl-Profiles found in the cache:",
+            "conanFile": "${workspaceFolder}/conanfile.py",
+            "profile": "Profiles found in the cache:",
+            "installArg": "",
+            "buildArg": "",
+            "createUser": "disroop",
+            "createChannel": "development",
+            "createArg": ""
+        },
+        {
+            "name": "test_package-Profiles found in the cache:",
+            "conanFile": "${workspaceFolder}/test_package/conanfile.py",
+            "profile": "Profiles found in the cache:",
+            "installArg": "",
+            "buildArg": "",
+            "createUser": "disroop",
+            "createChannel": "development",
+            "createArg": ""
+        },
+        {
+            "name": "tinygl",
+            "conanFile": "${workspaceFolder}/conanfile.py",
+            "profile": "default",
+            "installArg": "",
+            "buildArg": "",
+            "createUser": "disroop",
+            "createChannel": "development",
+            "createArg": ""
+        },
+        {
+            "name": "test_package",
+            "conanFile": "${workspaceFolder}/test_package/conanfile.py",
+            "profile": "default",
+            "installArg": "",
+            "buildArg": "",
+            "createUser": "disroop",
+            "createChannel": "development",
+            "createArg": ""
+        }
+    ]
+}
