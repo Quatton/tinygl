@@ -1,10 +1,10 @@
-install:
-  conan install . --build=missing --settings build_type=Debug
+configure:
+  cmake --preset=default
 
 build:
-  conan build . --settings build_type=Debug
+  cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
 
-run:
+run: build
   ./build/Debug/tinygl
 
 clean:

@@ -3,8 +3,7 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**",
-                "~/.conan2/**"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "macFrameworkPath": [

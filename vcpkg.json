@@ -1,0 +1,10 @@
+{
+  "name": "tinygl",
+  "version": "0.0.1",
+  "dependencies": [
+    "glad",
+    "glfw3",
+    "glm",
+    "stb"
+  ]
+}
