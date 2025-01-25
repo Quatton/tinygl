@@ -12,6 +12,11 @@ include_directories(
     ${Stb_INCLUDE_DIRS}
 )
 
+file(GLOB SHADERS
+    shaders/*.vert
+    shaders/*.frag
+)
+
 file(GLOB SOURCES
     src/*.cpp
     src/*.hpp
