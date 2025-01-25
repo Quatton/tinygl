@@ -60,6 +60,8 @@ void App::init() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     throw;
   }
+
+  glEnable(GL_DEPTH_TEST);
 }
 
 void App::run() {
@@ -89,6 +91,13 @@ void App::run() {
       -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
       0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
       -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f};
+
+  glm::vec3 cubePositions[] = {
+      glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+      glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+      glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+      glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+      glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
   unsigned int indices[] = {
       0, 1, 3, // first triangle
@@ -194,7 +203,7 @@ void App::run() {
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture0);
@@ -204,7 +213,18 @@ void App::run() {
     ourShader.setFloat("ratio", ratio);
     ourShader.use();
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    glBindVertexArray(VAO);
+    for (unsigned int i = 0; i < 10; i++) {
+      auto model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      float angle = 20.0f * i;
+      model =
+          glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      ourShader.setMat4("model", model);
+
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
