@@ -6,6 +6,7 @@ CompileFlags:
 Index:
   Background: Build
 
+
 Diagnostics:
   ClangTidy:
     Add: [performance-*, modernize-*, readability-*]
