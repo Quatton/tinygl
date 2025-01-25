@@ -70,7 +70,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 
 // activate the shader
 // ------------------------------------------------------------------------
-void Shader::use() { glUseProgram(ID); }
+void Shader::use() const { glUseProgram(ID); }
 // utility uniform functions
 // ------------------------------------------------------------------------
 void Shader::setBool(const std::string& name, bool value) const {
@@ -85,7 +85,7 @@ void Shader::setFloat(const std::string& name, float value) const {
   glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::checkCompileErrors(unsigned int shader, std::string type) {
+void Shader::checkCompileErrors(unsigned int shader, const std::string& type) {
   int success;
   char infoLog[1024];
   if (type != "PROGRAM") {
