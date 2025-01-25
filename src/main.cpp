@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+float ratio = 0.1f;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
@@ -15,6 +17,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void processInput(GLFWwindow* window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
+
+  if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+    ratio += 0.1;
+  }
+
+  if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    ratio -= 0.1;
+  }
 }
 
 const unsigned int SCR_WIDTH = 800;
@@ -132,6 +142,7 @@ int main() {
   ourShader.use();
   glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
   ourShader.setInt("texture2", 1);
+  ourShader.setFloat("ratio", ratio);
 
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
@@ -144,6 +155,7 @@ int main() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
+    ourShader.setFloat("ratio", ratio);
     ourShader.use();
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
