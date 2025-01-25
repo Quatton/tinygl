@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glad/glad.h>  // include glad to get all the required OpenGL headers
+#include <glad/glad.h> // include glad to get all the required OpenGL headers
 
 #include <string>
 #include <fstream>
@@ -9,7 +9,7 @@
 #include <iostream>
 
 class Shader {
- public:
+public:
   // the program ID
   unsigned int ID;
 
@@ -22,7 +22,7 @@ class Shader {
   void setInt(const std::string &name, int value) const;
   void setFloat(const std::string &name, float value) const;
 
- private:
+private:
   static void checkCompileErrors(unsigned int shader, const std::string &type);
 };
 

@@ -1,6 +1,6 @@
 #include "shader.hpp"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+Shader::Shader(const char *vertexPath, const char *fragmentPath) {
   // 1. retrieve the vertex/fragment source code from filePath
   std::string vertexCode;
   std::string fragmentCode;
@@ -27,23 +27,26 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
   } catch (std::ifstream::failure e) {
     std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n"
               << "Error: " << e.what() << std::endl;
-    throw;  // Rethrow to allow caller to handle
+    throw; // Rethrow to allow caller to handle
   }
 
-  const char* vShaderCode = vertexCode.c_str();
-  const char* fShaderCode = fragmentCode.c_str();
+  const char *vShaderCode = vertexCode.c_str();
+  const char *fShaderCode = fragmentCode.c_str();
 
   // 2. compile shaders
-  unsigned int vertex, fragment;
+
   int success;
   char infoLog[512];
 
-  vertex = glCreateShader(GL_VERTEX_SHADER);
+  unsigned int vertex = glCreateShader(GL_VERTEX_SHADER);
+
   glShaderSource(vertex, 1, &vShaderCode, NULL);
+
   glCompileShader(vertex);
+
   checkCompileErrors(vertex, "VERTEX");
   // fragment Shader
-  fragment = glCreateShader(GL_FRAGMENT_SHADER);
+  unsigned int fragment = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragment, 1, &fShaderCode, NULL);
   glCompileShader(fragment);
   checkCompileErrors(fragment, "FRAGMENT");
@@ -59,7 +62,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     glGetProgramInfoLog(ID, 512, NULL, infoLog);
     std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
               << infoLog << std::endl;
-    throw;  // Rethrow to allow caller to handle
+    throw; // Rethrow to allow caller to handle
   }
 
   // delete the shaders as they're linked into our program now and no longer
@@ -73,19 +76,19 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 void Shader::use() const { glUseProgram(ID); }
 // utility uniform functions
 // ------------------------------------------------------------------------
-void Shader::setBool(const std::string& name, bool value) const {
+void Shader::setBool(const std::string &name, bool value) const {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 // ------------------------------------------------------------------------
-void Shader::setInt(const std::string& name, int value) const {
+void Shader::setInt(const std::string &name, int value) const {
   glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 // ------------------------------------------------------------------------
-void Shader::setFloat(const std::string& name, float value) const {
+void Shader::setFloat(const std::string &name, float value) const {
   glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::checkCompileErrors(unsigned int shader, const std::string& type) {
+void Shader::checkCompileErrors(unsigned int shader, const std::string &type) {
   int success;
   char infoLog[1024];
   if (type != "PROGRAM") {
