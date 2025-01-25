@@ -21,8 +21,10 @@ class tinyglRecipe(ConanFile):
     exports_sources = "CMakeLists.txt", "src/*"
 
     def requirements(self):
+        self.requires("glm/cci.20230113")
         self.requires("glfw/3.4")
         self.requires("glad/0.1.36")
+        self.requires("stb/cci.20240531")
 
     def layout(self):
         cmake_layout(self)

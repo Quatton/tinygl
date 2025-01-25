@@ -1,5 +1,5 @@
 install:
-  conan install . --build=missing
+  conan install . --build=missing --settings build_type=Debug
 
 build:
   conan build . --settings build_type=Debug
