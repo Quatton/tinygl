@@ -1,7 +1,9 @@
 #pragma once
 
+#include "camera.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 class App {
 public:
@@ -18,9 +20,6 @@ public:
   const char *windowName;
 
   unsigned int VBO, VAO, EBO;
-
-  void (*inputCallback)(GLFWwindow *);
-  void (*eventLoop)();
 
   void init();
   void run();

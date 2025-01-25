@@ -20,5 +20,6 @@ Diagnostics:
       readability-isolate-declaration, 
       readability-magic-numbers,
       readability-uppercase-literal-suffix,
-      readability-implicit-bool-conversion
+      readability-implicit-bool-conversion,
+      readability-identifier-length
     ]
