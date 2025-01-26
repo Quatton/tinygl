@@ -14,6 +14,7 @@
 #include "object/object.hpp"
 
 #include "shader.hpp"
+#include "texture.hpp"
 
 #include <iostream>
 
@@ -45,6 +46,7 @@ public:
 
   Camera camera;
 
+  void insert_texture(Texture texture);
   void spawn(CubeObject cube);
 
   void run();
@@ -61,6 +63,8 @@ private:
   /// Will be loop through internally
   CubeModel *cube;
   std::vector<CubeObject> cubes;
+
+  std::vector<Texture> textures;
 
   /// Will be accessed by builder
   void init();

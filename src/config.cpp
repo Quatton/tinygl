@@ -1,34 +1,31 @@
 #include "config.hpp"
 
-AppBuilder::AppBuilder() {
-  this->app.majorVersion = 3;
-  this->app.minorVersion = 3;
-  this->app.windowWidth = 800;
-  this->app.windowHeight = 600;
-  this->app.windowName = "LearnOpenGL";
+AppBuilder &AppBuilder::setOpenGLVersion(int majorVersion, int minorVersion) {
+  major_version = majorVersion;
+  minor_version = minorVersion;
+  return *this;
 }
 
-AppBuilder *AppBuilder::setOpenGLVersion(int majorVersion, int minorVersion) {
-  this->app.majorVersion = majorVersion;
-  this->app.minorVersion = minorVersion;
-
-  return this;
+AppBuilder &AppBuilder::setWindowSize(int width, int height) {
+  window_width = width;
+  window_height = height;
+  return *this;
 }
 
-AppBuilder *AppBuilder::setWindowSize(int width, int height) {
-  this->app.windowWidth = width;
-  this->app.windowHeight = height;
-
-  return this;
+AppBuilder &AppBuilder::setWindowName(const char *name) {
+  window_name = name;
+  return *this;
 }
 
-AppBuilder *AppBuilder::setWindowName(const char *name) {
-  this->app.windowName = name;
+std::unique_ptr<App> AppBuilder::build() {
+  auto app = std::make_unique<App>();
+  app->majorVersion = major_version;
+  app->minorVersion = minor_version;
+  app->windowWidth = window_width;
+  app->windowHeight = window_height;
+  app->windowName = window_name;
 
-  return this;
-}
+  app->init();
 
-App *AppBuilder::build() {
-  app.init();
-  return &app;
+  return app;
 }

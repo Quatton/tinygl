@@ -1,11 +1,6 @@
 #include "app.hpp"
 #include <iostream>
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#endif
-
 void App::initGLFW() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
@@ -64,53 +59,9 @@ void App::init() {
   initShaders();
 }
 
+void App::insert_texture(Texture texture) { textures.push_back(texture); }
+
 void App::run() {
-  unsigned int texture0;
-  glGenTextures(1, &texture0);
-  glBindTexture(GL_TEXTURE_2D, texture0);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                  GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  int width, height, nrChannels;
-  stbi_set_flip_vertically_on_load(true);
-
-  unsigned char *data =
-      stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
-  if (data) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
-    std::cerr << "Failed to load texture" << std::endl;
-    throw;
-  }
-
-  unsigned int texture1;
-  glGenTextures(1, &texture1);
-  glBindTexture(GL_TEXTURE_2D, texture1);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                  GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  data = stbi_load("textures/awesomeface.png", &width, &height, &nrChannels, 0);
-  if (data) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
-    std::cerr << "Failed to load texture" << std::endl;
-    throw;
-  }
-
-  stbi_image_free(data);
-
   shader->use();
   glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
   shader->setInt("texture2", 1);
@@ -125,10 +76,10 @@ void App::run() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture0);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    for (size_t i = 0; i < textures.size(); i++) {
+      glActiveTexture(GL_TEXTURE0 + i);
+      glBindTexture(GL_TEXTURE_2D, textures[i].ID);
+    }
 
     shader->setFloat("ratio", ratio);
     shader->use();
