@@ -1,5 +1,6 @@
 #include "app.hpp"
 
+#include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,24 +15,11 @@
 
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-
-float deltaTime = 0.0f; // Time between current frame and last frame
-float lastFrame = 0.0f;
-
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = 800 / 2.0f;
-float lastY = 600 / 2.0f;
-bool firstMouse = true;
-
-float ratio = 0.1f;
-
-void processInput(GLFWwindow *window) {
+void App::processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
   }
@@ -57,8 +45,6 @@ void processInput(GLFWwindow *window) {
     camera.ProcessKeyboard(RIGHT, deltaTime);
   }
 }
-
-App::App() = default;
 
 void App::init() {
   glfwInit();
@@ -89,8 +75,14 @@ void App::init() {
   glEnable(GL_DEPTH_TEST);
 
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  glfwSetCursorPosCallback(window, mouse_callback);
-  glfwSetScrollCallback(window, scroll_callback);
+
+  glfwSetWindowUserPointer(window, this);
+  glfwSetCursorPosCallback(window, [](GLFWwindow *w, double x, double y) {
+    static_cast<App *>(glfwGetWindowUserPointer(w))->mouse_callback(w, x, y);
+  });
+  glfwSetScrollCallback(window, [](GLFWwindow *w, double x, double y) {
+    static_cast<App *>(glfwGetWindowUserPointer(w))->scroll_callback(w, x, y);
+  });
 }
 
 void App::run() {
@@ -256,9 +248,8 @@ App::~App() {
   glfwTerminate();
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
+// Move these from free functions to member functions
+void App::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
   auto xpos = static_cast<float>(xposIn);
   auto ypos = static_cast<float>(yposIn);
 
@@ -278,8 +269,6 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
   camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+void App::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
   camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
