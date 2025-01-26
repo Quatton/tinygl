@@ -3,13 +3,7 @@
 
 class AppBuilder {
 public:
-  int majorVersion;
-  int minorVersion;
-
-  int windowWidth;
-  int windowHeight;
-
-  const char *windowName;
+  App app;
 
   AppBuilder();
 
