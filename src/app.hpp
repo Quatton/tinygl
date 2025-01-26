@@ -53,7 +53,7 @@ public:
 
 private:
   void initGLFW();
-  void initGLAD();
+  static void initGLAD();
   void registerCallbacks();
   void initShapes();
   void initShaders();
