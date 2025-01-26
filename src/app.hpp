@@ -6,11 +6,20 @@
 // clang-format on
 
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "camera.hpp"
 #include "const.hpp"
+#include "model/model.hpp"
+#include "object/object.hpp"
+
+#include "shader.hpp"
+
+#include <iostream>
 
 class App {
+  friend class AppBuilder;
+
 public:
   App() : camera(Camera(glm::vec3(0.0f, 0.0f, 3.0f))) {}
   ~App();
@@ -34,8 +43,6 @@ public:
 
   float ratio = 0.1f;
 
-  unsigned int VBO, VAO, EBO;
-
   Camera camera;
 
   // Callbacks
@@ -45,6 +52,15 @@ public:
   void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
   void processInput(GLFWwindow *window);
 
-  void init();
+  void spawn(CubeObject cube);
+
   void run();
+
+private:
+  /// Will be loop through internally
+  CubeModel *cube;
+  std::vector<CubeObject> cubes;
+
+  /// Will be accessed by builder
+  void init();
 };

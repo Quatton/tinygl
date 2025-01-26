@@ -1,4 +1,5 @@
 #pragma once
+
 #include "app.hpp"
 
 class AppBuilder {
@@ -11,5 +12,5 @@ public:
   void setWindowSize(int width, int height);
   void setWindowName(const char *name);
 
-  [[nodiscard]] App build() const;
+  [[nodiscard]] App build();
 };

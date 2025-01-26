@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include <iostream>
 
 // constructor with vectors
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
@@ -21,6 +22,8 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY,
   Pitch = pitch;
   updateCameraVectors();
 }
+
+int p = 0;
 
 // returns the view matrix calculated using Euler Angles and the LookAt Matrix
 glm::mat4 Camera::GetViewMatrix() const {
@@ -95,4 +98,7 @@ void Camera::updateCameraVectors() {
                         // closer to 0 the more you look up or down which
                         // results in slower movement.
   Up = glm::normalize(glm::cross(Right, Front));
+
+  std::cout << "Front: " << Front.x << " " << Front.y << " " << Front.z
+            << std::endl;
 }

@@ -12,20 +12,8 @@ include_directories(
     ${Stb_INCLUDE_DIRS}
 )
 
-set(SOURCES
-    src/app.cpp
-    src/camera.cpp
-    src/config.cpp
-    src/shader.cpp
-)
-
-set(HEADERS
-    src/const.hpp
-    src/app.hpp
-    src/camera.hpp
-    src/config.hpp
-    src/shader.hpp
-)
+file(GLOB_RECURSE SOURCES src/*.cpp)
+file(GLOB_RECURSE HEADERS src/*.hpp)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
