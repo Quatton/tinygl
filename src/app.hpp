@@ -45,22 +45,30 @@ public:
 
   Camera camera;
 
-  // Callbacks
-  static void framebuffer_size_callback(GLFWwindow *window, int width,
-                                        int height);
-  void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-  void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-  void processInput(GLFWwindow *window);
-
   void spawn(CubeObject cube);
 
   void run();
 
 private:
+  void initGLFW();
+  void initGLAD();
+  void registerCallbacks();
+  void initShapes();
+  void initShaders();
+
+  Shader *shader;
+
   /// Will be loop through internally
   CubeModel *cube;
   std::vector<CubeObject> cubes;
 
   /// Will be accessed by builder
   void init();
+
+  // Callbacks
+  static void framebuffer_size_callback(GLFWwindow *window, int width,
+                                        int height);
+  void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+  void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+  void processInput(GLFWwindow *window);
 };

@@ -6,30 +6,7 @@
 #include <stb_image.h>
 #endif
 
-void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-  glViewport(0, 0, width, height);
-}
-
-void App::processInput(GLFWwindow *window) {
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window, true);
-  }
-
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    camera.ProcessKeyboard(FORWARD, deltaTime);
-  }
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    camera.ProcessKeyboard(BACKWARD, deltaTime);
-  }
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    camera.ProcessKeyboard(LEFT, deltaTime);
-  }
-  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    camera.ProcessKeyboard(RIGHT, deltaTime);
-  }
-}
-
-void App::init() {
+void App::initGLFW() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
@@ -49,14 +26,18 @@ void App::init() {
 
   glfwMakeContextCurrent(window);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
 
+void App::initGLAD() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD" << std::endl;
+    std::cerr << "Failed to initialize GLAD" << std::endl;
     throw;
   }
 
   glEnable(GL_DEPTH_TEST);
+}
 
+void App::registerCallbacks() {
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   glfwSetWindowUserPointer(window, this);
@@ -66,13 +47,24 @@ void App::init() {
   glfwSetScrollCallback(window, [](GLFWwindow *w, double x, double y) {
     static_cast<App *>(glfwGetWindowUserPointer(w))->scroll_callback(w, x, y);
   });
+}
 
-  cube = new CubeModel();
+void App::initShapes() { cube = new CubeModel(); }
+
+void App::initShaders() {
+  shader = new Shader("shaders/shader.vert", "shaders/shader.frag");
+}
+
+void App::init() {
+  initGLFW();
+  initGLAD();
+  registerCallbacks();
+
+  initShapes();
+  initShaders();
 }
 
 void App::run() {
-  Shader ourShader("shaders/shader.vert", "shaders/shader.frag");
-
   unsigned int texture0;
   glGenTextures(1, &texture0);
   glBindTexture(GL_TEXTURE_2D, texture0);
@@ -119,10 +111,10 @@ void App::run() {
 
   stbi_image_free(data);
 
-  ourShader.use();
-  glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
-  ourShader.setInt("texture2", 1);
-  ourShader.setFloat("ratio", ratio);
+  shader->use();
+  glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
+  shader->setInt("texture2", 1);
+  shader->setFloat("ratio", ratio);
 
   while (!glfwWindowShouldClose(window)) {
     auto currentFrame = static_cast<float>(glfwGetTime());
@@ -138,16 +130,16 @@ void App::run() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
-    ourShader.setFloat("ratio", ratio);
-    ourShader.use();
+    shader->setFloat("ratio", ratio);
+    shader->use();
 
     glm::mat4 projection = glm::perspective(
         glm::radians(camera.Zoom), (float)windowWidth / (float)windowHeight,
         0.1f, 100.0f);
-    ourShader.setMat4("projection", projection);
+    shader->setMat4("projection", projection);
 
     glm::mat4 view = camera.GetViewMatrix();
-    ourShader.setMat4("view", view);
+    shader->setMat4("view", view);
 
     // Render the cubes
     glBindVertexArray(cube->VAO);
@@ -155,7 +147,7 @@ void App::run() {
       auto model = glm::mat4(1.0f);
       model = glm::translate(model, cubes[i].position);
       model = model * glm::mat4_cast(cubes[i].rotation);
-      ourShader.setMat4("model", model);
+      shader->setMat4("model", model);
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
@@ -193,4 +185,27 @@ void App::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
 
 void App::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
   camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
+void App::processInput(GLFWwindow *window) {
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, true);
+  }
+
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    camera.ProcessKeyboard(FORWARD, deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    camera.ProcessKeyboard(BACKWARD, deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    camera.ProcessKeyboard(LEFT, deltaTime);
+  }
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    camera.ProcessKeyboard(RIGHT, deltaTime);
+  }
 }
