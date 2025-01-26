@@ -12,5 +12,5 @@ public:
   void setWindowSize(int width, int height);
   void setWindowName(const char *name);
 
-  [[nodiscard]] App build();
+  [[nodiscard]] App *build();
 };

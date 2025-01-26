@@ -22,7 +22,7 @@ void AppBuilder::setWindowName(const char *name) {
   this->app.windowName = name;
 }
 
-App AppBuilder::build() {
+App *AppBuilder::build() {
   app.init();
-  return app;
+  return &app;
 }

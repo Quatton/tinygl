@@ -147,8 +147,6 @@ void App::run() {
     ourShader.setMat4("projection", projection);
 
     glm::mat4 view = camera.GetViewMatrix();
-    // std::cout << "View: " << view[0][0] << " " << view[0][1] << " "
-    //           << view[0][2] << " " << view[0][3] << std::endl;
     ourShader.setMat4("view", view);
 
     // Render the cubes

@@ -16,17 +16,17 @@ int main() {
   config.setOpenGLVersion(3, 3);
   config.setWindowName("LearnOpenGL");
 
-  App app = config.build();
+  App *app = config.build();
 
   for (int i = 0; i < 10; i++) {
-    app.spawn(
+    app->spawn(
         CubeObject(cubePositions[i],
                    (glm::quat)glm::rotate(glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
                                           glm::radians(20.0f * i),
                                           glm::vec3(1.0f, 0.3f, 0.5f))));
   }
 
-  app.run();
+  app->run();
 
   return 0;
 }
