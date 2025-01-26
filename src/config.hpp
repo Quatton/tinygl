@@ -8,9 +8,9 @@ public:
 
   AppBuilder();
 
-  void setOpenGLVersion(int majorVersion, int minorVersion);
-  void setWindowSize(int width, int height);
-  void setWindowName(const char *name);
+  AppBuilder *setOpenGLVersion(int majorVersion, int minorVersion);
+  AppBuilder *setWindowSize(int width, int height);
+  AppBuilder *setWindowName(const char *name);
 
   [[nodiscard]] App *build();
 };

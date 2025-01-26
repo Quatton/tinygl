@@ -8,18 +8,24 @@ AppBuilder::AppBuilder() {
   this->app.windowName = "LearnOpenGL";
 }
 
-void AppBuilder::setOpenGLVersion(int majorVersion, int minorVersion) {
+AppBuilder *AppBuilder::setOpenGLVersion(int majorVersion, int minorVersion) {
   this->app.majorVersion = majorVersion;
   this->app.minorVersion = minorVersion;
+
+  return this;
 }
 
-void AppBuilder::setWindowSize(int width, int height) {
+AppBuilder *AppBuilder::setWindowSize(int width, int height) {
   this->app.windowWidth = width;
   this->app.windowHeight = height;
+
+  return this;
 }
 
-void AppBuilder::setWindowName(const char *name) {
+AppBuilder *AppBuilder::setWindowName(const char *name) {
   this->app.windowName = name;
+
+  return this;
 }
 
 App *AppBuilder::build() {

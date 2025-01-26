@@ -11,12 +11,11 @@ const glm::vec3 cubePositions[] = {
     glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
 
 int main() {
-  AppBuilder config;
-  config.setWindowSize(SCR_WIDTH, SCR_HEIGHT);
-  config.setOpenGLVersion(3, 3);
-  config.setWindowName("LearnOpenGL");
-
-  App *app = config.build();
+  App *app = (new AppBuilder())
+                 ->setWindowSize(SCR_WIDTH, SCR_HEIGHT)
+                 ->setOpenGLVersion(3, 3)
+                 ->setWindowName("LearnOpenGL")
+                 ->build();
 
   for (int i = 0; i < 10; i++) {
     app->spawn(
