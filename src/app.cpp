@@ -75,10 +75,10 @@ void App::run() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (size_t i = 0; i < textures.size(); i++) {
-      glActiveTexture(GL_TEXTURE0 + i);
-      glBindTexture(GL_TEXTURE_2D, textures[i].ID);
-    }
+    // for (size_t i = 0; i < textures.size(); i++) {
+    //   glActiveTexture(GL_TEXTURE0 + i);
+    //   glBindTexture(GL_TEXTURE_2D, textures[i].ID);
+    // }
 
     shader->setFloat("ratio", ratio);
     shader->use();
@@ -94,6 +94,7 @@ void App::run() {
     // Render the cubes
     glBindVertexArray(cube->VAO);
     for (unsigned int i = 0; i < 10; i++) {
+
       auto model = glm::mat4(1.0f);
       model = glm::translate(model, cubes[i].position);
       model = model * glm::mat4_cast(cubes[i].rotation);
@@ -113,7 +114,8 @@ App::~App() {
 
 void App::spawn(CubeObject cube) { cubes.push_back(cube); }
 
-void App::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
+void App::mouse_callback([[maybe_unused]] GLFWwindow *window, double xposIn,
+                         double yposIn) {
   auto xpos = static_cast<float>(xposIn);
   auto ypos = static_cast<float>(yposIn);
 
@@ -133,11 +135,13 @@ void App::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
   camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void App::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+void App::scroll_callback([[maybe_unused]] GLFWwindow *window,
+                          [[maybe_unused]] double xoffset, double yoffset) {
   camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void App::framebuffer_size_callback([[maybe_unused]] GLFWwindow *window,
+                                    int width, int height) {
   glViewport(0, 0, width, height);
 }
 
