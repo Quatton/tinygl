@@ -1,7 +1,7 @@
 #include "app.hpp"
 #include <iostream>
 
-void App::initGLFW() {
+void App::initGLFW(int majorVersion, int minorVersion, const char *windowName) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
@@ -50,18 +50,17 @@ void App::initShaders() {
   shader = new Shader("shaders/shader.vert", "shaders/shader.frag");
 }
 
-void App::init() {
-  initGLFW();
+void App::init(int majorVersion, int minorVersion, const char *windowName) {
+  initGLFW(majorVersion, minorVersion, windowName);
   initGLAD();
-  registerCallbacks();
-
-  initShapes();
-  initShaders();
 }
 
 void App::insert_texture(Texture texture) { textures.push_back(texture); }
 
 void App::run() {
+  registerCallbacks();
+  initShapes();
+  initShaders();
   shader->use();
   glUniform1i(glGetUniformLocation(shader->ID, "texture1"), 0);
   shader->setInt("texture2", 1);

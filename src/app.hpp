@@ -27,13 +27,8 @@ public:
 
   GLFWwindow *window;
 
-  int majorVersion = 3;
-  int minorVersion = 3;
-
   int windowWidth = SCR_WIDTH;
   int windowHeight = SCR_HEIGHT;
-
-  const char *windowName;
 
   float deltaTime = 0.0f; // Time between current frame and last frame
   float lastFrame = 0.0f;
@@ -52,7 +47,7 @@ public:
   void run();
 
 private:
-  void initGLFW();
+  void initGLFW(int majorVersion, int minorVersion, const char *windowName);
   static void initGLAD();
   void registerCallbacks();
   void initShapes();
@@ -67,7 +62,7 @@ private:
   std::vector<Texture> textures;
 
   /// Will be accessed by builder
-  void init();
+  void init(int majorVersion, int minorVersion, const char *windowName);
 
   // Callbacks
   static void framebuffer_size_callback(GLFWwindow *window, int width,

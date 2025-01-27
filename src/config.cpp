@@ -19,13 +19,10 @@ AppBuilder &AppBuilder::setWindowName(const char *name) {
 
 std::unique_ptr<App> AppBuilder::build() {
   auto app = std::make_unique<App>();
-  app->majorVersion = major_version;
-  app->minorVersion = minor_version;
   app->windowWidth = window_width;
   app->windowHeight = window_height;
-  app->windowName = window_name;
 
-  app->init();
+  app->init(major_version, minor_version, window_name);
 
   return app;
 }
