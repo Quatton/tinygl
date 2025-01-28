@@ -3,13 +3,17 @@
 #include <map>
 
 template <class T> class Res {
-
 public:
   unsigned int current_id = 0;
 
   unsigned int add(T item) {
     items[current_id] = item;
     return current_id++;
+  }
+
+  unsigned int add_with_id(unsigned int id, T item) {
+    items[id] = item;
+    return id;
   }
 
   T get(unsigned int id) { return items[id]; }

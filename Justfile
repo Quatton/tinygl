@@ -1,10 +1,10 @@
 configure:
   cmake --preset default
 
-build: configure
+build:
   cmake --build build --parallel 10 --config Debug
 
-run: build
+run:
   ./build/tinygl
 
 clean:

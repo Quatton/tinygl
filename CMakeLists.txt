@@ -15,19 +15,24 @@ include_directories(
 set(SOURCES
     src/camera_plugin.cpp
     src/camera.cpp
+    src/shader.cpp
+    src/timer.cpp
 )
 
 set(HEADERS
+    src/builder.hpp
+    src/camera_plugin.hpp
+    src/renderer_plugin.hpp
+    src/camera.hpp
+    src/window.hpp
+
+    src/model.hpp
     src/config.hpp
     src/object.hpp
     src/pipeline.hpp
     src/plugin.hpp
     src/res.hpp
-
-    src/builder.hpp
-    src/camera_plugin.hpp
-    src/camera.hpp
-    src/window.hpp
+    src/shader.hpp
 )
 
 add_executable(${PROJECT_NAME}

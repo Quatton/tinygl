@@ -9,35 +9,61 @@
 #include "config.hpp"
 #include "pipeline.hpp"
 #include "plugin.hpp"
+#include <memory>
 #include <typeinfo>
 
 void scroll_callback(GLFWwindow *w, double x, double y);
 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mods);
-
-class CameraContext {
+struct CameraContext {
 public:
   float lastX = SCR_WIDTH / 2.0f;
   float lastY = SCR_HEIGHT / 2.0f;
   bool firstMouse = true;
 
-  Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+  std::unique_ptr<Camera> camera =
+      std::make_unique<Camera>(glm::vec3(0.0f, 0.0f, 3.0f));
 
   float ratio = 0.1f;
 };
 
 class CameraPlugin : public PluginBase {
 public:
-  CameraContext ctx;
-  void setup(Pipeline &p) override {
-    auto *window = p.window->instance;
+  std::unique_ptr<CameraContext> ctx = std::make_unique<CameraContext>();
 
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetKeyCallback(window, key_callback);
+  void setup(Pipeline &p) override {
+    auto *gw = p.window->instance;
+
+    glfwSetWindowUserPointer(gw, &p);
+    glfwSetInputMode(gw, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetCursorPosCallback(gw, mouse_callback);
+    glfwSetScrollCallback(gw, scroll_callback);
+  }
+
+  void update(Pipeline &p) override {
+
+    auto *camera = p.get_plugin<CameraPlugin>()->ctx->camera.get();
+    auto *window = p.window->instance;
+    float deltaTime = p.timer.deltaTime;
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      glfwSetWindowShouldClose(window, true);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+      camera->ProcessKeyboard(FORWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+      camera->ProcessKeyboard(BACKWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+      camera->ProcessKeyboard(LEFT, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+      camera->ProcessKeyboard(RIGHT, deltaTime);
+    }
   }
 
   [[nodiscard]] const std::type_info &type() const override {

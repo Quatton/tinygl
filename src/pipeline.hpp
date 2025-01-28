@@ -1,7 +1,11 @@
 #pragma once
 
-#include "context.hpp"
+#include <glad/glad.h>
+
 #include "plugin.hpp"
+#include "timer.hpp"
+#include "window.hpp"
+#include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
@@ -13,8 +17,18 @@ public:
 
   void run() {
     auto *gw = window->instance;
+
+    glUseProgram(3);
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+      std::cerr << "OpenGL Error: " << error << std::endl;
+      throw;
+    }
+
     while (!glfwWindowShouldClose(gw)) {
       timer.tick();
+
       window->clear();
 
       update();
@@ -47,8 +61,8 @@ public:
 
   Pipeline(std::unique_ptr<Window> window) : window(std::move(window)) {}
 
-private:
-  // void render();
+  friend class PipelineBuilder;
 
+private:
   std::vector<std::unique_ptr<PluginBase>> plugins_;
 };

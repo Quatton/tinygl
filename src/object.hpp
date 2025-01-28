@@ -5,15 +5,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-class Model {
-public:
-  int VBO, VAO, EBO;
-
-  virtual void draw() const;
-};
-
 class Object {
 public:
+  unsigned int ID;
+
   Object(glm::vec3 position = glm::vec3(0.0f),
          glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
       : position(position), rotation(rotation) {}
@@ -23,10 +18,4 @@ public:
   std::optional<std::reference_wrapper<class Model>> model;
 
   ~Object() = default;
-
-  virtual void draw() const {
-    if (model.has_value()) {
-      model.value().get().draw();
-    }
-  }
 };

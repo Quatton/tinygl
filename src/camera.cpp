@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include <iostream>
 
 // constructor with vectors
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
@@ -9,6 +10,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
   Yaw = yaw;
   Pitch = pitch;
   updateCameraVectors();
+  std::cout << "Camera constructor" << std::endl;
 }
 // constructor with scalar values
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY,

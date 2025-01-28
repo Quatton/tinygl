@@ -16,7 +16,7 @@ public:
   int width = SCR_WIDTH;
   int height = SCR_HEIGHT;
 
-  glm::vec4 clearColor = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
+  glm::vec4 clearColor = glm::vec4(0.1, 0.1, 0.1, 1.0);
 
   GLFWwindow *instance;
 
@@ -38,7 +38,7 @@ public:
     if (!glfwInit()) {
       throw std::runtime_error("Failed to initialize GLFW");
     }
-
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

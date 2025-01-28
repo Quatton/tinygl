@@ -47,7 +47,6 @@ public:
   }
 
   std::unique_ptr<Pipeline> build() {
-
     auto pipeline = std::make_unique<Pipeline>(std::make_unique<Window>(
         majorVersion, minorVersion, windowName, windowWidth, windowHeight));
 
@@ -55,11 +54,13 @@ public:
       std::cerr << "Failed to initialize GLAD" << std::endl;
       throw;
     }
+
     glEnable(GL_DEPTH_TEST);
 
     auto *instance = pipeline->window->instance;
 
     glfwSetWindowUserPointer(instance, &pipeline);
+    pipeline->plugins_ = std::move(plugins_);
     pipeline->setup();
 
     return pipeline;
