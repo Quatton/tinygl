@@ -12,13 +12,28 @@ include_directories(
     ${Stb_INCLUDE_DIRS}
 )
 
-file(GLOB_RECURSE SOURCES src/*.cpp)
-file(GLOB_RECURSE HEADERS src/*.hpp)
+set(SOURCES
+    src/camera_plugin.cpp
+    src/camera.cpp
+)
+
+set(HEADERS
+    src/config.hpp
+    src/object.hpp
+    src/pipeline.hpp
+    src/plugin.hpp
+    src/res.hpp
+
+    src/builder.hpp
+    src/camera_plugin.hpp
+    src/camera.hpp
+    src/window.hpp
+)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    ${SOURCES}
     ${HEADERS}
+    ${SOURCES}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

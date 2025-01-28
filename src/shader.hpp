@@ -1,20 +1,22 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include "object.hpp"
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <string>
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 class Shader {
 public:
   // the program ID
   unsigned int ID;
+  std::vector<class std::reference_wrapper<Object>> usedBy;
 
   // constructor reads and builds the shader
   Shader(const char *vertexPath, const char *fragmentPath);
