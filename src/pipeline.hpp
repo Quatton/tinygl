@@ -8,13 +8,14 @@
 
 class Pipeline {
 public:
-  std::unique_ptr<PipelineContext> ctx;
+  std::unique_ptr<Window> window;
+  Timer timer;
 
   void run() {
-    auto *gw = ctx->window->instance;
+    auto *gw = window->instance;
     while (!glfwWindowShouldClose(gw)) {
-      ctx->timer->tick();
-      ctx->window->clear();
+      timer.tick();
+      window->clear();
 
       update();
 
@@ -44,7 +45,7 @@ public:
     return nullptr;
   }
 
-  Pipeline(std::unique_ptr<PipelineContext> ctx) : ctx(std::move(ctx)) {}
+  Pipeline(std::unique_ptr<Window> window) : window(std::move(window)) {}
 
 private:
   // void render();

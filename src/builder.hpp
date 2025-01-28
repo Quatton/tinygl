@@ -8,6 +8,7 @@
 
 #include "config.hpp"
 #include "pipeline.hpp"
+#include "window.hpp"
 
 class PipelineBuilder {
 public:
@@ -46,8 +47,9 @@ public:
   }
 
   std::unique_ptr<Pipeline> build() {
-    auto window = std::make_unique<Window>(
-        majorVersion, minorVersion, windowName, windowWidth, windowHeight);
+
+    auto pipeline = std::make_unique<Pipeline>(std::make_unique<Window>(
+        majorVersion, minorVersion, windowName, windowWidth, windowHeight));
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
       std::cerr << "Failed to initialize GLAD" << std::endl;
@@ -55,9 +57,7 @@ public:
     }
     glEnable(GL_DEPTH_TEST);
 
-    auto *instance = window->instance;
-    auto pipeline = std::make_unique<Pipeline>(
-        std::make_unique<PipelineContext>(std::move(window)));
+    auto *instance = pipeline->window->instance;
 
     glfwSetWindowUserPointer(instance, &pipeline);
     pipeline->setup();

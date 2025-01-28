@@ -41,7 +41,7 @@ void key_callback(GLFWwindow *window, int key, [[maybe_unused]] int scancode,
                     ->ctx.camera;
 
   auto deltaTime = static_cast<Pipeline *>(glfwGetWindowUserPointer(window))
-                       ->ctx->timer->deltaTime;
+                       ->timer.deltaTime;
 
   if (action == GLFW_PRESS) {
     switch (key) {

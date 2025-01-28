@@ -33,7 +33,7 @@ class CameraPlugin : public PluginBase {
 public:
   CameraContext ctx;
   void setup(Pipeline &p) override {
-    auto *window = p.ctx->window->instance;
+    auto *window = p.window->instance;
 
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
