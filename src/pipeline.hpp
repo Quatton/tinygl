@@ -18,14 +18,6 @@ public:
   void run() {
     auto *gw = window->instance;
 
-    glUseProgram(3);
-
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-      std::cerr << "OpenGL Error: " << error << std::endl;
-      throw;
-    }
-
     while (!glfwWindowShouldClose(gw)) {
       timer.tick();
 

@@ -98,12 +98,13 @@ public:
           auto obj = r_o.get();
 
           auto model = glm::mat4(1.0f);
-          model = glm::translate(model, obj.position);
-          model = model * glm::mat4_cast(obj.rotation);
 
           for (const auto &hook : ctx->object_hooks[obj.ID]) {
-            hook(ObjectHookInput{p, s, r_m.get(), obj, model});
+            hook(ObjectHookInput{p, s.get(), r_m.get(), obj, model});
           }
+
+          model = glm::translate(model, obj.position);
+          model = model * glm::mat4_cast(obj.rotation);
 
           s.get().setMat4("model", model);
 

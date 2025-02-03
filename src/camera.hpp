@@ -38,9 +38,8 @@ public:
   float Near;
   float Far;
 
-  // window size
-  int WindowWidth;
-  int WindowHeight;
+  // Aspect ratio
+  float AspectRatio;
 
   // constructor with vectors
   Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),

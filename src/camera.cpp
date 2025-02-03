@@ -14,8 +14,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch,
   Pitch = pitch;
   Near = near;
   Far = far;
-  WindowWidth = windowWidth;
-  WindowHeight = windowHeight;
+  AspectRatio = windowWidth / windowHeight;
   updateCameraVectors();
   std::cout << "Camera constructor" << std::endl;
 }
@@ -37,8 +36,7 @@ glm::mat4 Camera::GetViewMatrix() const {
 }
 
 glm::mat4 Camera::GetProjectionMatrix() const {
-  return glm::perspective(glm::radians(Zoom),
-                          (float)WindowWidth / (float)WindowHeight, Near, Far);
+  return glm::perspective(glm::radians(Zoom), (float)AspectRatio, Near, Far);
 }
 
 // processes input received from any keyboard-like input system. Accepts input

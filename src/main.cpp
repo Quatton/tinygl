@@ -3,6 +3,7 @@
 #include "model.hpp"
 #include "renderer_plugin.hpp"
 #include "shader.hpp"
+#include <GLFW/glfw3.h>
 
 int main() {
   auto app = PipelineBuilder()
@@ -25,14 +26,24 @@ int main() {
   auto cube = Object(glm::vec3(0.0f, 0.0f, 0.0f));
   rd->add_object(cubeModel, cube);
 
-  auto lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+  auto lightPos = glm::vec3(0.0f, 1.0f, 1.0f);
   auto light = Object(lightPos);
   rd->add_object(lightModel, light);
 
-  rd->set_object_hook(cube, [lightPos](ObjectHookInput ctx) {
+  rd->set_object_hook(cube, [](ObjectHookInput ctx) {
+    auto t = glfwGetTime();
+    auto lightPos = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
     ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     ctx.shader.setVec3("lightPos", lightPos);
+    ctx.shader.setVec3(
+        "viewPos",
+        ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
+  });
+
+  rd->set_object_hook(light, [](ObjectHookInput ctx) {
+    auto t = glfwGetTime();
+    ctx.object.position = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
   });
 
   app->run();

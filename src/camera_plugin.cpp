@@ -1,4 +1,6 @@
 #include "camera_plugin.hpp"
+#include "plugin.hpp"
+#include <GLFW/glfw3.h>
 
 void scroll_callback(GLFWwindow *w, [[maybe_unused]] double x, double y) {
   static_cast<Pipeline *>(glfwGetWindowUserPointer(w))
@@ -30,4 +32,13 @@ void mouse_callback([[maybe_unused]] GLFWwindow *window, double xposIn,
   cctx->lastY = ypos;
 
   cctx->camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void framebuffer_size_callback([[maybe_unused]] GLFWwindow *window, int width,
+                               int height) {
+  glViewport(0, 0, width, height);
+  auto *camera = static_cast<Pipeline *>(glfwGetWindowUserPointer(window))
+                     ->get_plugin<CameraPlugin>()
+                     ->ctx->camera.get();
+  camera->AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 }
