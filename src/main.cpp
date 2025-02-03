@@ -18,16 +18,21 @@ int main() {
   rd->add_shader(ls);
 
   auto cubeModel = CubeModel::create();
-  auto lightModel = cubeModel.copy();
   rd->add_model(ss, cubeModel);
+  auto lightModel = cubeModel.copy();
   rd->add_model(ls, lightModel);
+
   auto cube = Object(glm::vec3(0.0f, 0.0f, 0.0f));
-  auto light = Object(glm::vec3(1.2f, 1.0f, 2.0f));
   rd->add_object(cubeModel, cube);
+
+  auto lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
+  auto light = Object(lightPos);
   rd->add_object(lightModel, light);
-  rd->set_object_hook(cube, [](ObjectHookInput ctx) {
+
+  rd->set_object_hook(cube, [lightPos](ObjectHookInput ctx) {
     ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+    ctx.shader.setVec3("lightPos", lightPos);
   });
 
   app->run();

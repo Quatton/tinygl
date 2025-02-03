@@ -71,7 +71,8 @@ public:
     f->second.emplace_back(o);
   }
 
-  void set_object_hook(Object &o, void (*hook)(ObjectHookInput)) const {
+  void set_object_hook(Object &o,
+                       std::function<void(ObjectHookInput)> hook) const {
     auto f = ctx->object_hooks.find(o.ID);
     if (f == ctx->object_hooks.end()) {
       throw std::runtime_error(
