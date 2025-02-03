@@ -1,14 +1,21 @@
 #include "camera.hpp"
+#include <glm/ext/matrix_projection.hpp>
+#include <glm/geometric.hpp>
 #include <iostream>
 
 // constructor with vectors
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch,
+               float near, float far, float windowWidth, float windowHeight)
     : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED),
       MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
   Position = position;
   WorldUp = up;
   Yaw = yaw;
   Pitch = pitch;
+  Near = near;
+  Far = far;
+  WindowWidth = windowWidth;
+  WindowHeight = windowHeight;
   updateCameraVectors();
   std::cout << "Camera constructor" << std::endl;
 }
@@ -29,22 +36,33 @@ glm::mat4 Camera::GetViewMatrix() const {
   return glm::lookAt(Position, Position + Front, Up);
 }
 
+glm::mat4 Camera::GetProjectionMatrix() const {
+  return glm::perspective(glm::radians(Zoom),
+                          (float)WindowWidth / (float)WindowHeight, Near, Far);
+}
+
 // processes input received from any keyboard-like input system. Accepts input
 // parameter in the form of camera defined ENUM (to abstract it from windowing
 // systems)
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
   float velocity = MovementSpeed * deltaTime;
   if (direction == FORWARD) {
-    Position += Front * velocity;
+    Position += glm::normalize(Front - glm::dot(Front, Up) * Up) * velocity;
   }
   if (direction == BACKWARD) {
-    Position -= Front * velocity;
+    Position -= glm::normalize(Front - glm::dot(Front, Up) * Up) * velocity;
   }
   if (direction == LEFT) {
     Position -= Right * velocity;
   }
   if (direction == RIGHT) {
     Position += Right * velocity;
+  }
+  if (direction == UP) {
+    Position += Up * velocity;
+  }
+  if (direction == DOWN) {
+    Position -= Up * velocity;
   }
 }
 

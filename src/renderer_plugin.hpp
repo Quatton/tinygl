@@ -85,12 +85,8 @@ public:
 
   void update(Pipeline &p) override {
     auto *camera = p.get_plugin<CameraPlugin>()->ctx->camera.get();
-    auto *window = p.window.get();
     glm::mat4 view = camera->GetViewMatrix();
-    glm::mat4 projection = glm::perspective(
-        glm::radians(camera->Zoom),
-        (float)window->width / (float)window->height, 0.1f, 100.0f);
-
+    glm::mat4 projection = camera->GetProjectionMatrix();
     for (auto [sID, s] : ctx->shaders) {
       s.get().use();
       s.get().setMat4("projection", projection);
