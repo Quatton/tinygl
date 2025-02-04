@@ -33,6 +33,10 @@ int main() {
   rd->set_object_hook(cube, [](ObjectHookInput ctx) {
     auto t = glfwGetTime();
     auto lightPos = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
+    ctx.shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+    ctx.shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+    ctx.shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    ctx.shader.setFloat("material.shininess", 32.0f);
     ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     ctx.shader.setVec3("lightPos", lightPos);
