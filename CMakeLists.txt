@@ -17,6 +17,7 @@ set(SOURCES
     src/camera.cpp
     src/shader.cpp
     src/timer.cpp
+    src/texture.cpp
 )
 
 set(HEADERS
@@ -25,6 +26,7 @@ set(HEADERS
     src/renderer_plugin.hpp
     src/camera.hpp
     src/window.hpp
+    src/texture.hpp
 
     src/model.hpp
     src/config.hpp

@@ -3,6 +3,7 @@
 #include "model.hpp"
 #include "renderer_plugin.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
 #include <GLFW/glfw3.h>
 
 int main() {
@@ -30,7 +31,16 @@ int main() {
   auto light = Object(lightPos);
   rd->add_object(lightModel, light);
 
-  rd->set_object_hook(cube, [](ObjectHookInput ctx) {
+  auto containerTexture = TextureLoader()
+                              .from_path("textures/container2.png")
+                              .set_wrap_s(Wrap::REPEAT)
+                              .set_wrap_t(Wrap::REPEAT)
+                              .set_min_filter(MinFilter::LINEAR_MIPMAP_LINEAR)
+                              .set_mag_filter(MagFilter::NEAREST)
+                              .load()
+                              ->ID;
+
+  rd->set_object_hook(cube, [containerTexture](ObjectHookInput ctx) {
     auto t = glfwGetTime();
     auto lightPos = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
     ctx.shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
@@ -48,16 +58,10 @@ int main() {
         "viewPos",
         ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
 
-    // glm::vec3 lightColor;
-    // lightColor.x = sin(glfwGetTime() * 2.0f);
-    // lightColor.y = sin(glfwGetTime() * 0.7f);
-    // lightColor.z = sin(glfwGetTime() * 1.3f);
+    ctx.shader.setInt("material.diffuse", 0);
 
-    // glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-    // glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
-    // ctx.shader.setVec3("light.ambient", ambientColor);
-    // ctx.shader.setVec3("light.diffuse", diffuseColor);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, containerTexture);
   });
 
   rd->set_object_hook(light, [](ObjectHookInput ctx) {
