@@ -22,6 +22,11 @@ struct ObjectHookInput {
   glm::mat4 &mat_model;
 };
 
+struct ShaderHookInput {
+  Pipeline &pipeline;
+  Shader &shader;
+};
+
 struct RendererContext {
   std::map<unsigned int, std::reference_wrapper<Shader>> shaders;
   std::map<unsigned int, std::vector<std::reference_wrapper<Model>>>
@@ -30,6 +35,8 @@ struct RendererContext {
       model_objects;
   std::map<unsigned int, std::vector<std::function<void(ObjectHookInput)>>>
       object_hooks;
+  std::map<unsigned int, std::vector<std::function<void(ShaderHookInput)>>>
+      shader_hooks;
 };
 
 class RendererPlugin : public PluginBase {
@@ -42,11 +49,12 @@ public:
     ctx->shaders.emplace(s.ID, std::ref(s));
     ctx->shader_models.emplace(s.ID,
                                std::vector<std::reference_wrapper<Model>>());
+    ctx->shader_hooks.emplace(
+        s.ID, std::vector<std::function<void(ShaderHookInput)>>());
   }
 
   void add_model(Shader &s, Model &m) const {
     m.ID = ctx->model_objects.size();
-
     ctx->model_objects.emplace(m.ID,
                                std::vector<std::reference_wrapper<Object>>());
     auto f = ctx->shader_models.find(s.ID);
@@ -82,6 +90,17 @@ public:
     f->second.emplace_back(hook);
   }
 
+  void set_shader_hook(Shader &s,
+                       std::function<void(ShaderHookInput)> hook) const {
+    auto f = ctx->shader_hooks.find(s.ID);
+    if (f == ctx->shader_hooks.end()) {
+      throw std::runtime_error(
+          "Cannot set hook for shader that's not registered");
+    }
+
+    f->second.emplace_back(hook);
+  }
+
   void setup([[maybe_unused]] Pipeline &p) override {}
 
   void update(Pipeline &p) override {
@@ -93,8 +112,13 @@ public:
       s.get().setMat4("projection", projection);
       s.get().setMat4("view", view);
 
+      for (const auto &hook : ctx->shader_hooks[s.get().ID]) {
+        hook(ShaderHookInput{p, s.get()});
+      }
+
       for (auto r_m : ctx->shader_models[sID]) {
         for (auto r_o : ctx->model_objects[r_m.get().ID]) {
+
           auto obj = r_o.get();
 
           auto model = glm::mat4(1.0f);
@@ -102,6 +126,10 @@ public:
           for (const auto &hook : ctx->object_hooks[obj.ID]) {
             hook(ObjectHookInput{p, s.get(), r_m.get(), obj, model});
           }
+
+          std::cout << "ID: " << obj.ID
+                    << " Position: " << glm::to_string(obj.position)
+                    << std::endl;
 
           model = glm::translate(model, obj.position);
           model = model * glm::mat4_cast(obj.rotation);
