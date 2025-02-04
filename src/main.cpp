@@ -5,7 +5,9 @@
 #include "renderer_plugin.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "utils.hpp"
 #include <GLFW/glfw3.h>
+#include <fmt/core.h>
 #include <glm/geometric.hpp>
 #include <memory>
 
@@ -65,35 +67,53 @@ int main() {
   ss.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
   ss.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
-  ss.setFloat("light.constant", 1.0f);
-  ss.setFloat("light.linear", 0.09f);
-  ss.setFloat("light.quadratic", 0.032f);
+  ss.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+  ss.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+  ss.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+  ss.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-  ss.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-  ss.setVec3("light.diffuse", 0.5f, 0.5f,
-             0.5f); // darken diffuse light a bit
-  ss.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+  ss.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+  ss.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+  ss.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+  ss.setFloat("spotLight.constant", 1.0f);
+  ss.setFloat("spotLight.linear", 0.09f);
+  ss.setFloat("spotLight.quadratic", 0.032f);
+  ss.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+  ss.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+
+  glm::vec3 pointLightPositions[] = {
+      glm::vec3(0.7f, 0.2f, 2.0f), glm::vec3(2.3f, -3.3f, -4.0f),
+      glm::vec3(-4.0f, 2.0f, -12.0f), glm::vec3(0.0f, 0.0f, -3.0f)};
+
+  for (int i = 0; i < 4; i++) {
+    ss.setVec3(fmt::format("pointLights[{}].position", i),
+               pointLightPositions[i]);
+    ss.setFloat(fmt::format("pointLights[{}].constant", i), 1.0f);
+    ss.setFloat(fmt::format("pointLights[{}].linear", i), 0.09f);
+    ss.setFloat(fmt::format("pointLights[{}].quadratic", i), 0.032f);
+    ss.setVec3(fmt::format("pointLights[{}].ambient", i), 0.05f, 0.05f, 0.05f);
+    ss.setVec3(fmt::format("pointLights[{}].diffuse", i), 0.8f, 0.8f, 0.8f);
+    ss.setVec3(fmt::format("pointLights[{}].specular", i), 1.0f, 1.0f, 1.0f);
+  }
 
   ss.setInt("material.diffuse", 0);
   ss.setInt("material.specular", 1);
 
-  rd->set_shader_hook(
-      ss, [&containerTexture, &containerSpecular](ShaderHookInput ctx) {
-        auto t = glfwGetTime();
-        auto lightPos = glm::normalize(glm::vec3(sin(t), 1.0f, cos(t))) * 2.0f;
+  rd->set_shader_hook(ss, [&containerTexture,
+                           &containerSpecular](ShaderHookInput ctx) {
+    auto *camera = ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera.get();
 
-        ctx.shader.setVec3(
-            "viewPos",
-            ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
+    ctx.shader.setVec3("spotLight.position", camera->Position);
+    ctx.shader.setVec3("spotLight.direction", camera->Front);
 
-        ctx.shader.setVec3("light.position", lightPos);
+    ctx.shader.setVec3("viewPos", camera->Position);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, containerTexture->ID);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, containerTexture->ID);
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, containerSpecular->ID);
-      });
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, containerSpecular->ID);
+  });
 
   app->run();
 

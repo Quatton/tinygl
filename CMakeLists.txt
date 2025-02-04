@@ -7,6 +7,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Stb REQUIRED)
+find_package(fmt REQUIRED)
 
 include_directories(
     ${Stb_INCLUDE_DIRS}
@@ -28,6 +29,7 @@ set(HEADERS
     src/window.hpp
     src/texture.hpp
 
+    src/utils.hpp
     src/model.hpp
     src/config.hpp
     src/object.hpp
@@ -47,6 +49,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     glad::glad
     glm::glm-header-only
+    fmt::fmt
 )
 
 install(TARGETS ${PROJECT_NAME}
