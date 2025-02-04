@@ -37,32 +37,44 @@ int main() {
                               .set_wrap_t(Wrap::REPEAT)
                               .set_min_filter(MinFilter::LINEAR_MIPMAP_LINEAR)
                               .set_mag_filter(MagFilter::NEAREST)
-                              .load()
-                              ->ID;
+                              .load();
 
-  rd->set_object_hook(cube, [containerTexture](ObjectHookInput ctx) {
-    auto t = glfwGetTime();
-    auto lightPos = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
-    ctx.shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    ctx.shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-    ctx.shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-    ctx.shader.setFloat("material.shininess", 32.0f);
-    ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-    ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    ctx.shader.setVec3("lightPos", lightPos);
-    ctx.shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    ctx.shader.setVec3("light.diffuse", 0.5f, 0.5f,
-                       0.5f); // darken diffuse light a bit
-    ctx.shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-    ctx.shader.setVec3(
-        "viewPos",
-        ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
+  auto containerSpecular = TextureLoader()
+                               .from_path("textures/container2_specular.png")
+                               .set_wrap_s(Wrap::REPEAT)
+                               .set_wrap_t(Wrap::REPEAT)
+                               .set_min_filter(MinFilter::LINEAR_MIPMAP_LINEAR)
+                               .set_mag_filter(MagFilter::NEAREST)
+                               .load();
 
-    ctx.shader.setInt("material.diffuse", 0);
+  rd->set_object_hook(
+      cube, [&containerTexture, &containerSpecular](ObjectHookInput ctx) {
+        auto t = glfwGetTime();
+        auto lightPos = glm::vec3(sin(t), 1.0f, cos(t)) * 2.0f;
+        ctx.shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        ctx.shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        ctx.shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        ctx.shader.setFloat("material.shininess", 32.0f);
+        ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        ctx.shader.setVec3("lightPos", lightPos);
+        ctx.shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        ctx.shader.setVec3("light.diffuse", 0.5f, 0.5f,
+                           0.5f); // darken diffuse light a bit
+        ctx.shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        ctx.shader.setVec3(
+            "viewPos",
+            ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, containerTexture);
-  });
+        ctx.shader.setInt("material.diffuse", 0);
+        ctx.shader.setInt("material.specular", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, containerTexture->ID);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, containerSpecular->ID);
+      });
 
   rd->set_object_hook(light, [](ObjectHookInput ctx) {
     auto t = glfwGetTime();
