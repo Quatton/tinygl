@@ -16,7 +16,6 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch,
   Far = far;
   AspectRatio = windowWidth / windowHeight;
   updateCameraVectors();
-  std::cout << "Camera constructor" << std::endl;
 }
 // constructor with scalar values
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY,

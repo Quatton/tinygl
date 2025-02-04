@@ -69,12 +69,12 @@ int main() {
 
   ss.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
   ss.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-  ss.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-  ss.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+  ss.setVec3("dirLight.diffuse", 3.0f, 3.0f, 2.0f);
+  ss.setVec3("dirLight.specular", 5.0f, 5.0f, 2.0f);
 
   ss.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-  ss.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-  ss.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+  ss.setVec3("spotLight.diffuse", 3.0f, 2.0f, 3.0f);
+  ss.setVec3("spotLight.specular", 3.0f, 2.0f, 3.0f);
   ss.setFloat("spotLight.constant", 1.0f);
   ss.setFloat("spotLight.linear", 0.09f);
   ss.setFloat("spotLight.quadratic", 0.032f);
