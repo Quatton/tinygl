@@ -44,11 +44,12 @@ glm::mat4 Camera::GetProjectionMatrix() const {
 // systems)
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
   float velocity = MovementSpeed * deltaTime;
+  auto Y = glm::vec3(0.0, 1.0, 0.0);
   if (direction == FORWARD) {
-    Position += glm::normalize(Front - glm::dot(Front, Up) * Up) * velocity;
+    Position += glm::normalize(Front - glm::dot(Front, Y) * Y) * velocity;
   }
   if (direction == BACKWARD) {
-    Position -= glm::normalize(Front - glm::dot(Front, Up) * Up) * velocity;
+    Position -= glm::normalize(Front - glm::dot(Front, Y) * Y) * velocity;
   }
   if (direction == LEFT) {
     Position -= Right * velocity;
