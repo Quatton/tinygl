@@ -40,9 +40,24 @@ int main() {
     ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     ctx.shader.setVec3("lightPos", lightPos);
+    ctx.shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+    ctx.shader.setVec3("light.diffuse", 0.5f, 0.5f,
+                       0.5f); // darken diffuse light a bit
+    ctx.shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
     ctx.shader.setVec3(
         "viewPos",
         ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
+
+    // glm::vec3 lightColor;
+    // lightColor.x = sin(glfwGetTime() * 2.0f);
+    // lightColor.y = sin(glfwGetTime() * 0.7f);
+    // lightColor.z = sin(glfwGetTime() * 1.3f);
+
+    // glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+    // glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+    // ctx.shader.setVec3("light.ambient", ambientColor);
+    // ctx.shader.setVec3("light.diffuse", diffuseColor);
   });
 
   rd->set_object_hook(light, [](ObjectHookInput ctx) {
