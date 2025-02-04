@@ -57,28 +57,36 @@ int main() {
     rd->add_object(cubeModel, *cubes[i]);
   }
 
+  ss.use();
+  ss.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+  ss.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+  ss.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+  ss.setFloat("material.shininess", 32.0f);
+  ss.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+  ss.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+
+  ss.setFloat("light.constant", 1.0f);
+  ss.setFloat("light.linear", 0.09f);
+  ss.setFloat("light.quadratic", 0.032f);
+
+  ss.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+  ss.setVec3("light.diffuse", 0.5f, 0.5f,
+             0.5f); // darken diffuse light a bit
+  ss.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+  ss.setInt("material.diffuse", 0);
+  ss.setInt("material.specular", 1);
+
   rd->set_shader_hook(
       ss, [&containerTexture, &containerSpecular](ShaderHookInput ctx) {
         auto t = glfwGetTime();
-        auto lightDir = glm::normalize(glm::vec3(sin(t), -1.0f, cos(t)));
+        auto lightPos = glm::normalize(glm::vec3(sin(t), 1.0f, cos(t))) * 2.0f;
 
-        ctx.shader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        ctx.shader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-        ctx.shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        ctx.shader.setFloat("material.shininess", 32.0f);
-        ctx.shader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        ctx.shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        ctx.shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        ctx.shader.setVec3("light.diffuse", 0.5f, 0.5f,
-                           0.5f); // darken diffuse light a bit
-        ctx.shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         ctx.shader.setVec3(
             "viewPos",
             ctx.pipeline.get_plugin<CameraPlugin>()->ctx->camera->Position);
 
-        ctx.shader.setInt("material.diffuse", 0);
-        ctx.shader.setInt("material.specular", 1);
-        ctx.shader.setVec3("light.direction", lightDir);
+        ctx.shader.setVec3("light.position", lightPos);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, containerTexture->ID);

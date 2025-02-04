@@ -127,10 +127,6 @@ public:
             hook(ObjectHookInput{p, s.get(), r_m.get(), obj, model});
           }
 
-          std::cout << "ID: " << obj.ID
-                    << " Position: " << glm::to_string(obj.position)
-                    << std::endl;
-
           model = glm::translate(model, obj.position);
           model = model * glm::mat4_cast(obj.rotation);
 
