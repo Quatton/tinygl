@@ -26,7 +26,7 @@ public:
   MinFilter min_filter = MinFilter::LINEAR_MIPMAP_LINEAR;
   MagFilter mag_filter = MagFilter::NEAREST;
 
-  bool flip_vertically = false;
+  bool flip_vertically = true;
 
   bool alpha_channel = false;
 
@@ -42,5 +42,5 @@ public:
 
   TextureLoader &from_path(const std::string &path);
 
-  [[nodiscard]] std::unique_ptr<Texture> load() const;
+  [[nodiscard]] Texture load() const;
 };

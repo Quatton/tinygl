@@ -2,10 +2,8 @@
 
 #include "camera_plugin.hpp"
 #include "model.hpp"
-#include "object.hpp"
 #include "pipeline.hpp"
 #include "plugin.hpp"
-#include "res.hpp"
 #include "shader.hpp"
 #include <functional>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -14,11 +12,10 @@
 #include <map>
 #include <optional>
 
-struct ObjectHookInput {
+struct ModelHookInput {
   Pipeline &pipeline;
   Shader &shader;
   Model &model;
-  Object &object;
   glm::mat4 &mat_model;
 };
 
@@ -31,12 +28,10 @@ struct RendererContext {
   std::map<unsigned int, std::reference_wrapper<Shader>> shaders;
   std::map<unsigned int, std::vector<std::reference_wrapper<Model>>>
       shader_models;
-  std::map<unsigned int, std::vector<std::reference_wrapper<Object>>>
-      model_objects;
-  std::map<unsigned int, std::vector<std::function<void(ObjectHookInput)>>>
-      object_hooks;
   std::map<unsigned int, std::vector<std::function<void(ShaderHookInput)>>>
       shader_hooks;
+  std::map<unsigned int, std::vector<std::function<void(ModelHookInput)>>>
+      model_hooks;
 };
 
 class RendererPlugin : public PluginBase {
@@ -54,9 +49,9 @@ public:
   }
 
   void add_model(Shader &s, Model &m) const {
-    m.ID = ctx->model_objects.size();
-    ctx->model_objects.emplace(m.ID,
-                               std::vector<std::reference_wrapper<Object>>());
+    m.ID = ctx->model_hooks.size();
+    ctx->model_hooks.emplace(
+        m.ID, std::vector<std::function<void(ModelHookInput)>>());
     auto f = ctx->shader_models.find(s.ID);
     if (f == ctx->shader_models.end()) {
       throw std::runtime_error(
@@ -66,23 +61,10 @@ public:
     f->second.emplace_back(m);
   }
 
-  void add_object(Model &m, Object &o) const {
-    o.ID = ctx->object_hooks.size();
-    ctx->object_hooks.emplace(
-        o.ID, std::vector<std::function<void(ObjectHookInput)>>());
-    auto f = ctx->model_objects.find(m.ID);
-    if (f == ctx->model_objects.end()) {
-      throw std::runtime_error(
-          "Cannot add object to model that's not registered with a shader");
-    }
-
-    f->second.emplace_back(o);
-  }
-
-  void set_object_hook(Object &o,
-                       std::function<void(ObjectHookInput)> hook) const {
-    auto f = ctx->object_hooks.find(o.ID);
-    if (f == ctx->object_hooks.end()) {
+  void set_model_hook(Model &m,
+                      std::function<void(ModelHookInput)> hook) const {
+    auto f = ctx->model_hooks.find(m.ID);
+    if (f == ctx->model_hooks.end()) {
       throw std::runtime_error(
           "Cannot set hook for object that's not registered");
     }
@@ -117,23 +99,16 @@ public:
       }
 
       for (auto r_m : ctx->shader_models[sID]) {
-        for (auto r_o : ctx->model_objects[r_m.get().ID]) {
+        auto m = r_m.get();
+        auto model = glm::mat4(1.0f);
 
-          auto obj = r_o.get();
-
-          auto model = glm::mat4(1.0f);
-
-          for (const auto &hook : ctx->object_hooks[obj.ID]) {
-            hook(ObjectHookInput{p, s.get(), r_m.get(), obj, model});
-          }
-
-          model = glm::translate(model, obj.position);
-          model = model * glm::mat4_cast(obj.rotation);
-
-          s.get().setMat4("model", model);
-
-          r_m.get().draw();
+        for (const auto &hook : ctx->model_hooks[m.ID]) {
+          hook(ModelHookInput{p, s.get(), r_m.get(), model});
         }
+
+        s.get().setMat4("model", model);
+
+        r_m.get().Draw(s);
       }
     }
   }

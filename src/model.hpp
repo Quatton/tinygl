@@ -1,3 +1,5 @@
+#pragma once
+
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -7,15 +9,20 @@
 
 class Model {
 public:
-  Model(const char *path) { loadModel(path); }
-  void Draw(Shader &shader);
+  unsigned int ID;
 
-private:
-  // model data
   std::vector<Mesh> meshes;
   std::vector<Texture> textures_loaded;
   std::string directory;
+  bool gammaCorrection;
 
+  Model(const char *path, bool gamma = false) : gammaCorrection(gamma) {
+    loadModel(path);
+  }
+
+  void Draw(Shader &shader);
+
+private:
   void loadModel(const std::string &path);
   void processNode(aiNode *node, const aiScene *scene);
   Mesh processMesh(aiMesh *mesh, const aiScene *scene);

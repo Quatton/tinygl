@@ -48,10 +48,12 @@ TextureLoader &TextureLoader::from_path(const std::string &path) {
   return *this;
 }
 
-std::unique_ptr<Texture> TextureLoader::load() const {
-  auto tx = std::make_unique<Texture>();
+Texture TextureLoader::load() const {
+  stbi_set_flip_vertically_on_load(flip_vertically);
 
-  glGenTextures(1, &tx->ID);
+  Texture tx;
+
+  glGenTextures(1, &tx.ID);
 
   int width, height, nrComponents;
   unsigned char *data =
@@ -67,8 +69,7 @@ std::unique_ptr<Texture> TextureLoader::load() const {
     } else {
       throw std::runtime_error("Unknown number of components");
     }
-
-    glBindTexture(GL_TEXTURE_2D, tx->ID);
+    glBindTexture(GL_TEXTURE_2D, tx.ID);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                  GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -84,7 +85,7 @@ std::unique_ptr<Texture> TextureLoader::load() const {
     stbi_image_free(data);
   }
 
-  tx->type = type;
+  tx.type = type;
 
   return tx;
 }

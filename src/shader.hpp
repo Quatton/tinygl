@@ -1,7 +1,6 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "object.hpp"
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
