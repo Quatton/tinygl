@@ -1,6 +1,8 @@
 #include "texture.hpp"
 #include <iostream>
 #include <memory>
+#include <string>
+#include <utility>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -36,7 +38,12 @@ TextureLoader &TextureLoader::set_alpha_channel(bool alpha_channel) {
   return *this;
 }
 
-TextureLoader &TextureLoader::from_path(const char *path) {
+TextureLoader &TextureLoader::set_type(std::string type) {
+  this->type = std::move(type);
+  return *this;
+}
+
+TextureLoader &TextureLoader::from_path(const std::string &path) {
   this->path = path;
   return *this;
 }
@@ -47,7 +54,8 @@ std::unique_ptr<Texture> TextureLoader::load() const {
   glGenTextures(1, &tx->ID);
 
   int width, height, nrComponents;
-  unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+  unsigned char *data =
+      stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
   if (data) {
     GLenum format;
     if (nrComponents == 1) {
@@ -75,6 +83,8 @@ std::unique_ptr<Texture> TextureLoader::load() const {
     std::cout << "Texture failed to load at path: " << path << std::endl;
     stbi_image_free(data);
   }
+
+  tx->type = type;
 
   return tx;
 }
